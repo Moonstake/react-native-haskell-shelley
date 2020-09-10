@@ -426,6 +426,16 @@ export class ByronAddress extends Ptr {
     const ret = await HaskellShelley.byronAddressFromAddress(addrPtr);
     return Ptr._wrap(ret, ByronAddress);
   }
+  /**
+  * @param {Bip32PublicKey} key
+  * @param {number} network
+  * @returns {Promise<ByronAddress | undefined>}
+  */
+  static async from_icarus_key(key, network) {
+    const keyPtr = Ptr._assertClass(key, Bip32PublicKey);
+    const ret = await HaskellShelley.byronAddressFromIcarusKey(keyPtr, network);
+    return Ptr._wrap(ret, ByronAddress);
+  }
 }
 
 export class Address extends Ptr {

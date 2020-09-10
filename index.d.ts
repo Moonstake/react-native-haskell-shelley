@@ -276,6 +276,13 @@ export class ByronAddress extends Ptr {
   * @returns {Promise<ByronAddress | undefined>}
   */
   static from_address(addr): Promise<ByronAddress | undefined>
+  /**
+  * @param {Bip32PublicKey} key
+  * @param {number} network
+  * @returns {Promise<ByronAddress | undefined>}
+  */
+  static from_icarus_key(key, network): Promise<ByronAddress | undefined>
+    
 }
 
 export class Address extends Ptr {

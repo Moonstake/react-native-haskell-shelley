@@ -102,6 +102,11 @@ bool byron_address_from_address(RPtr rptr, RPtr *result, CharPtr *error);
 
 bool byron_address_from_base58(CharPtr chars, RPtr *result, CharPtr *error);
 
+bool byron_address_from_icarus_key(RPtr bip_32_public_key,
+                                   uint8_t network,
+                                   RPtr *result,
+                                   CharPtr *error);
+
 bool byron_address_is_valid(CharPtr chars, bool *result, CharPtr *error);
 
 bool byron_address_to_address(RPtr rptr, RPtr *result, CharPtr *error);
