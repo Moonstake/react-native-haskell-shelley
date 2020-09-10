@@ -1523,6 +1523,17 @@ RCT_EXPORT_METHOD(ptrFree:(NSString *)ptr withResolve:(RCTPromiseResolveBlock)re
     rptr_free(&rPtr);
     resolve(nil);
 }
+RCT_EXPORT_METHOD(byronAddressFromIcarusKey:(nonnull NSString *)ptr withPaymentNetwork:(nonnull NSNumber *)network withResolve:(RCTPromiseResolveBlock)resolve andReject:(RCTPromiseRejectBlock)reject)
+{
+    [[CSafeOperation new:^NSString*(NSArray* params, CharPtr* error) {
+        RPtr result;
+        uintptr_t network = [[params objectAtIndex:1] unsignedIntegerValue];
+        RPtr key = [[params objectAtIndex:0] rPtr];
+        return byron_address_from_icarus_key(key, network, &result, error)
+            ? [NSString stringFromPtr:result]
+            : nil;
+    }] exec:@[ptr, network] andResolve:resolve orReject:reject];
+}
 
 + (void)initialize
 {

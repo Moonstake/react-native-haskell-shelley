@@ -1108,4 +1108,12 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
                 .pour(promise);
     }
 
+    @ReactMethod
+    public final void byronAddressFromIcarusKey(String bip32PublicKey, Integer network, Promise promise) {
+        Native.I
+                .byronAddressFromIcarusKey(new RPtr(bip32PublicKey), network)
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
 }
