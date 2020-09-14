@@ -140,8 +140,12 @@ export class PublicKey extends Ptr {
     * @returns {Promise<PublicKey>}
     */
     static async from_bech32(bech32_str) {
-      const ret = await HaskellShelley.publicKeyFromBech32(bech32_str);
-      return Ptr._wrap(ret, PublicKey);
+      try{
+        const ret = await HaskellShelley.publicKeyFromBech32(bech32_str);
+        return Ptr._wrap(ret, PublicKey);
+      }catch(err){
+        return undefined;
+      }
     }
 
     /**
