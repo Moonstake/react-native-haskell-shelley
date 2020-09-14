@@ -476,9 +476,9 @@ export class Address extends Ptr {
   * @returns {Promise<Address>}
   */
   static async from_bech32(string) {
-    const ret = null;
+    let ret = null;
     try{
-      const ret = await HaskellShelley.addressFromBech32(string);
+      ret = await HaskellShelley.addressFromBech32(string);
       return Ptr._wrap(ret, Address);
     }catch(err){
       return undefined;
