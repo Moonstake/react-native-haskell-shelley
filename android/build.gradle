@@ -68,7 +68,7 @@ cargo {
     libname = 'react_native_haskell_shelley'
     targets = ['arm', 'arm64', 'x86', 'x86_64']
     apiLevel = safeExtGet('ndkApiLevel', DEFAULT_NDK_API_LEVEL)
-    prebuiltToolchains = true
+    //prebuiltToolchains = true
 }
 
 repositories {
