@@ -4,8 +4,9 @@ use super::string::*;
 use crate::panic::{handle_exception_result, ToResult};
 use crate::ptr::RPtrRepresentable;
 use jni::objects::{JObject, JString};
-use jni::sys::{jbyteArray, jobject};
+use jni::sys::{jbyteArray, jobject, jint};
 use jni::JNIEnv;
+use super::primitive::ToPrimitiveObject;
 use cardano_serialization_lib::address::{Address};
 
 // cddl_lib: (&self) -> Vec<u8>
@@ -51,7 +52,8 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_addressToBech32(
   handle_exception_result(|| {
     let rptr = ptr.rptr(&env)?;
     let val = rptr.typed_ref::<Address>()?;
-    val.to_bech32(None).jstring(&env)
+    val.to_bech32(None).into_result()
+    .and_then(|address_str| address_str.jstring(&env))
   })
   .jresult(&env)
 }
@@ -65,7 +67,8 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_addressToBech32W
     let rptr = ptr.rptr(&env)?;
     let rstr = prefix.string(&env)?;
     let val = rptr.typed_ref::<Address>()?;
-    val.to_bech32(Some(rstr)).jstring(&env)
+    val.to_bech32(Some(rstr)).into_result()
+    .and_then(|address_str| address_str.jstring(&env))
   })
   .jresult(&env)
 }
@@ -79,6 +82,21 @@ pub extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_addressFromBech32(
     let rstr = string.string(&env)?;
     let val = Address::from_bech32(&rstr).into_result()?;
     val.rptr().jptr(&env)
+  })
+  .jresult(&env)
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_addressNetworkId(
+  env: JNIEnv, _: JObject, ptr: JRPtr
+) -> jobject {
+  handle_exception_result(|| {
+    let rptr = ptr.rptr(&env)?;
+    rptr
+      .typed_ref::<Address>()
+      .and_then(|addr| addr.network_id().into_result())
+      .and_then(|network_id| (network_id as jint).jobject(&env))
   })
   .jresult(&env)
 }

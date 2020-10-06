@@ -1,5 +1,5 @@
 use jni::objects::{JObject, JString};
-use jni::sys::{jobject, jboolean, jint};
+use jni::sys::{jobject, jboolean, jlong};
 use jni::JNIEnv;
 use super::ptr_j::*;
 use super::result::ToJniResult;
@@ -77,6 +77,38 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_byronAddressFrom
   })
   .jresult(&env)
 }
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_byronAddressByronProtocolMagic(
+  env: JNIEnv, _: JObject, ptr: JRPtr
+) -> jobject {
+  handle_exception_result(|| {
+    let rptr = ptr.rptr(&env)?;
+    rptr
+      .typed_ref::<ByronAddress>()
+      .map(|addr| addr.byron_protocol_magic())
+      .and_then(|protocol_magic| (protocol_magic as jlong).jobject(&env))
+  })
+  .jresult(&env)
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_byronAddressAttributes(
+  env: JNIEnv, _: JObject, byron_address: JRPtr
+) -> jobject {
+  handle_exception_result(|| {
+    let byron_address = byron_address.rptr(&env)?;
+    byron_address
+      .typed_ref::<ByronAddress>()
+      .map(|byron_address| byron_address.attributes())
+      .and_then(|bytes| env.byte_array_from_slice(&bytes).into_result())
+      .map(|arr| JObject::from(arr))
+  })
+  .jresult(&env)
+}
+
 #[allow(non_snake_case)]
 #[no_mangle]
 pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_byronAddressFromIcarusKey(
@@ -86,9 +118,8 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_byronAddressFrom
     let bip_32_public_key = bip_32_public_key.rptr(&env)?;
     bip_32_public_key
       .typed_ref::<Bip32PublicKey>()
-      .map(|bip_32_public_key| ByronAddress::from_icarus_key(bip_32_public_key, network as u8))
+      .map(|bip_32_public_key| ByronAddress::icarus_from_key(bip_32_public_key, network as u32))
       .and_then(|byron_address| byron_address.rptr().jptr(&env))
   })
   .jresult(&env)
 }
-
