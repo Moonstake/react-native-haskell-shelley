@@ -12,7 +12,7 @@ use cardano_serialization_lib::fees::{LinearFee};
 use cardano_serialization_lib::utils::{Coin, BigNum};
 use cardano_serialization_lib::address::{Address, ByronAddress};
 use cardano_serialization_lib::crypto::{Ed25519KeyHash};
-use cardano_serialization_lib::{TransactionInput, TransactionOutput, Certificates};
+use cardano_serialization_lib::{TransactionInput, TransactionOutput, Certificates, Withdrawals};
 
 #[allow(non_snake_case)]
 #[no_mangle]
@@ -75,6 +75,23 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_transactionBuild
 
 #[allow(non_snake_case)]
 #[no_mangle]
+pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_transactionBuilderFeeForOutput(
+  env: JNIEnv, _: JObject, tx_builder: JRPtr, output: JRPtr
+) -> jobject {
+  handle_exception_result(|| {
+    let tx_builder = tx_builder.rptr(&env)?;
+    let output = output.rptr(&env)?;
+    tx_builder
+      .typed_ref::<TransactionBuilder>()
+      .zip(output.typed_ref::<TransactionOutput>())
+      .and_then(|(tx_builder, output)| tx_builder.fee_for_output(output).into_result())
+      .and_then(|fee| fee.rptr().jptr(&env))
+  })
+  .jresult(&env)
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
 pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_transactionBuilderSetFee(
   env: JNIEnv, _: JObject, tx_builder: JRPtr, fee: JRPtr
 ) -> jobject {
@@ -125,6 +142,23 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_transactionBuild
 
 #[allow(non_snake_case)]
 #[no_mangle]
+pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_transactionBuilderSetWithdrawals(
+  env: JNIEnv, _: JObject, tx_builder: JRPtr, withdrawals: JRPtr
+) -> jobject {
+  handle_exception_result(|| {
+    let tx_builder = tx_builder.rptr(&env)?;
+    let withdrawals = withdrawals.rptr(&env)?;
+    tx_builder
+      .typed_ref::<TransactionBuilder>()
+      .zip(withdrawals.typed_ref::<Withdrawals>())
+      .map(|(tx_builder, withdrawals)| tx_builder.set_withdrawals(withdrawals))
+  })
+  .map(|_| JObject::null())
+  .jresult(&env)
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
 pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_transactionBuilderNew(
   env: JNIEnv, _: JObject, linear_fee: JRPtr, minimum_utxo_val: JRPtr, pool_deposit: JRPtr, key_deposit: JRPtr
 ) -> jobject {
@@ -158,7 +192,6 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_transactionBuild
       .and_then(|tx_builder| tx_builder.get_explicit_input().into_result())
       .and_then(|amount| amount.rptr().jptr(&env))
   })
-  // .map(|amount: BigNum| amount.rptr().jptr(&env))
   .jresult(&env)
 }
 

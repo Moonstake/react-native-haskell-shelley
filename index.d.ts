@@ -48,13 +48,13 @@ export class BigNum extends Ptr {
   * @param {BigNum} other
   * @returns {Promise<BigNum>}
   */
-  checked_add(other): Promise<Coin>;
+  checked_add(other): Promise<BigNum>;
 
   /**
   * @param {BigNum} other
   * @returns {Promise<BigNum>}
   */
-  checked_sub(other): Promise<Coin>;
+  checked_sub(other): Promise<BigNum>;
 
 }
 
@@ -174,6 +174,11 @@ export class Bip32PublicKey extends Ptr {
   * @returns {Promise<string>}
   */
   to_bech32(): Promise<string>;
+
+  /**
+  * @returns {Promise<Uint8Array>}
+  */
+  chaincode(): Promise<Uint8Array>;
 }
 
 /**
@@ -252,37 +257,47 @@ export class ByronAddress extends Ptr {
   /**
   * @returns {Promise<string>}
   */
-  to_base58(): Promise<string>
+  to_base58(): Promise<string>;
 
   /**
   * @param {string} string
   * @returns {Promise<ByronAddress>}
   */
-  static from_base58(string: string): Promise<ByronAddress>
+  static from_base58(string: string): Promise<ByronAddress>;
 
   /**
   * @param {string} string
   * @returns {Promise<boolean>}
   */
-  static async is_valid(string): Promise<boolean>
+  static is_valid(string): Promise<boolean>;
 
   /**
   * @returns {Promise<Address>}
   */
-  async to_address(): Promise<Address>
+  to_address(): Promise<Address>;
 
   /**
   * @param {Address} addr
   * @returns {Promise<ByronAddress | undefined>}
   */
-  static from_address(addr): Promise<ByronAddress | undefined>
+  static from_address(addr): Promise<ByronAddress | undefined>;
+
+  /**
+  * @returns {Promise<number>}
+  */
+  byron_protocol_magic(): Promise<number>;
+
+  /**
+  * @returns {Promise<Uint8Array>}
+  */
+  async attributes(): Promise<Uint8Array>;
+
   /**
   * @param {Bip32PublicKey} key
   * @param {number} network
   * @returns {Promise<ByronAddress | undefined>}
   */
-  static from_icarus_key(key, network): Promise<ByronAddress | undefined>
-    
+ static icarus_from_key(key, network): Promise<ByronAddress | undefined>
 }
 
 export class Address extends Ptr {
@@ -308,6 +323,24 @@ export class Address extends Ptr {
   * @returns {Promise<Address>}
   */
   static from_bech32(string) : Promise<Address>
+
+  /**
+  * @returns {Promise<number>}
+  */
+  network_id(): Promise<number>;
+}
+
+export class Ed25519Signature extends Ptr {
+  /**
+  * @returns {Promise<Uint8Array>}
+  */
+  to_bytes(): Promise<Uint8Array>;
+
+  /**
+  * @param {Uint8Array} bytes
+  * @returns {Promise<Ed25519Signature>}
+  */
+  static from_bytes(bytes: Uint8Array): Promise<Ed25519Signature>;
 }
 
 export class Ed25519KeyHash extends Ptr {
@@ -321,6 +354,20 @@ export class Ed25519KeyHash extends Ptr {
   * @returns {Promise<Uint8Array>}
   */
   to_bytes(): Promise<Uint8Array>;
+}
+
+export class ScriptHash extends Ptr {
+
+  /**
+  * @returns {Promise<Uint8Array>}
+  */
+  to_bytes(): Promise<Uint8Array>;
+
+  /**
+  * @param {Uint8Array} bytes
+  * @returns {Promise<ScriptHash>}
+  */
+  static from_bytes(bytes: Uint8Array): Promise<ScriptHash>;
 }
 
 export class TransactionHash extends Ptr {
@@ -355,9 +402,20 @@ export class StakeCredential extends Ptr {
   static from_keyhash(hash: Ed25519KeyHash): Promise<StakeCredential>
 
   /**
+  * @param {ScriptHash} hash
+  * @returns {Promise<StakeCredential>}
+  */
+  static from_scripthash(hash: ScriptHash): Promise<StakeCredential>;
+
+  /**
   * @returns {Promise<Ed25519KeyHash>}
   */
-  to_keyhash(): Promise<Ed25519KeyHash>;
+  to_keyhash(): Promise<Ed25519KeyHash | undefined>;
+
+  /**
+  * @returns {Promise<ScriptHash | undefined>}
+  */
+  to_scripthash(): Promise<ScriptHash | undefined>;
 
   /**
   * @returns {Promise<number>}
@@ -453,25 +511,40 @@ export class Certificate extends Ptr {
   * @param {Uint8Array} bytes
   * @returns {Promise<Certificate>}
   */
-  static from_bytes(bytes): Promise<Certificate>
+  static from_bytes(bytes): Promise<Certificate>;
 
   /**
   * @param {StakeRegistration} stakeRegistration
   * @returns {Promise<Certificate>}
   */
-  static new_stake_registration(stakeRegistration): Promise<Certificate>
+  static new_stake_registration(stakeRegistration): Promise<Certificate>;
 
   /**
   * @param {StakeDeregistration} stakeDeregistration
   * @returns {Promise<Certificate>}
   */
-  static new_stake_deregistration(stakeDeregistration): Promise<Certificate>
+  static new_stake_deregistration(stakeDeregistration): Promise<Certificate>;
 
   /**
   * @param {StakeDelegation} stakeDelegation
   * @returns {Promise<Certificate>}
   */
-  static new_stake_delegation(stakeDelegation): Promise<Certificate>
+  static new_stake_delegation(stakeDelegation): Promise<Certificate>;
+
+  /**
+  * @returns {Promise<StakeRegistration | undefined>}
+  */
+  as_stake_registration(): Promise<StakeRegistration | undefined>;
+
+  /**
+  * @returns {Promise<StakeDeregistration | undefined>}
+  */
+  as_stake_deregistration(): Promise<StakeDeregistration | undefined>;
+
+  /**
+  * @returns {Promise<StakeDelegation | undefined>}
+  */
+  as_stake_delegation(): Promise<StakeDelegation | undefined>;
 }
 
 export class Certificates extends Ptr {
@@ -495,6 +568,12 @@ export class Certificates extends Ptr {
   * @returns {Promise<number>}
   */
   len(): Promise<number>
+
+  /**
+  * @param {number} index
+  * @returns {Promise<Certificate>}
+  */
+  get(index: number): Promise<Certificate>
 
   /**
   * @param {Certificate} item
@@ -542,7 +621,7 @@ export class RewardAddress extends Ptr {
   * @param {StakeCredential} payment
   * @returns {Promise<RewardAddress>}
   */
-  static new(network, payment): Promise<RewardAddress>
+  static new(network: number, payment: StakeCredential): Promise<RewardAddress>
 
   /**
   * @returns {Promise<StakeCredential>}
@@ -558,7 +637,31 @@ export class RewardAddress extends Ptr {
   * @param {Address} addr
   * @returns {Promise<RewardAddress | undefined>}
   */
-  static from_address(addr): Promise<RewardAddress | undefined>
+  static from_address(addr: Address): Promise<RewardAddress | undefined>
+}
+
+export class RewardAddresses extends Ptr {
+  /**
+  * @returns {Promise<RewardAddresses>}
+  */
+  static new(): Promise<RewardAddresses>;
+
+  /**
+  * @returns {Promise<number>}
+  */
+  len(): Promise<number>;
+
+  /**
+  * @param {number} index
+  * @returns {Promise<RewardAddress>}
+  */
+  get(index: number): Promise<RewardAddress>;
+
+  /**
+  * @param {RewardAddress} item
+  * @returns {Promise<void>}
+  */
+  add(item: RewardAddress): Promise<void>;
 }
 
 export class UnitInterval extends Ptr {
@@ -596,7 +699,7 @@ export class TransactionInput extends Ptr {
   /**
   * @returns {Promise<number>}
   */
-  async index(): Promise<number>;
+  index(): Promise<number>;
 
   /**
   * @param {TransactionHash} transactionId
@@ -604,6 +707,18 @@ export class TransactionInput extends Ptr {
   * @returns {Promise<TransactionInput>}
   */
   static new(transactionId: TransactionHash, index: TransactionIndex): Promise<TransactionInput>;
+}
+
+export class TransactionInputs extends Ptr {
+  /**
+  * @returns {Promise<number>}
+  */
+  len(): Promise<number>
+  /**
+  * @param {number} index
+  * @returns {Promise<TransactionInput>}
+  */
+  get(index: number): Promise<TransactionInput>
 }
 
 export class TransactionOutput extends Ptr {
@@ -620,10 +735,10 @@ export class TransactionOutput extends Ptr {
 
   /**
   * @param {Address} address
-  * @param {Coin} amount
+  * @param {BigNum} amount
   * @returns {Promise<TransactionOutput>}
   */
-  static new(address: Address, amount: Coin): Promise<TransactionOutput>;
+  static new(address: Address, amount: BigNum): Promise<TransactionOutput>;
 
   /**
   * @returns {Promise<Address>}
@@ -650,46 +765,100 @@ export class TransactionOutputs extends Ptr {
 
 export class LinearFee extends Ptr {
   /**
-  * @returns {Promise<Coin>}
+  * @returns {Promise<BigNum>}
   */
-  constant(): Promise<Coin>;
+  constant(): Promise<BigNum>;
 
   /**
-  * @returns {Promise<Coin>}
+  * @returns {Promise<BigNum>}
   */
-  coefficient(): Promise<Coin>;
+  coefficient(): Promise<BigNum>;
 
   /**
-  * @param {Coin} coefficient
-  * @param {Coin} constant
+  * @param {BigNum} coefficient
+  * @param {BigNum} constant
   * @returns {Promise<LinearFee>}
   */
-  static new(coefficient: Coin, constant: Coin): Promise<LinearFee>;
+  static new(coefficient: BigNum, constant: BigNum): Promise<LinearFee>;
 }
 
-// TODO
-export class Vkeywitness extends Ptr {}
+export class Vkey extends Ptr {
+  /**
+  * @param {PublicKey} pk
+  * @returns {Promise<Vkey>}
+  */
+  static new(pk): Promise<Vkey>;
+}
+
+export class Vkeywitness extends Ptr {
+  /**
+  * @returns {Promise<Uint8Array>}
+  */
+  to_bytes(): Promise<Uint8Array>
+
+  /**
+  * @param {Uint8Array} bytes
+  * @returns {Promise<Vkeywitness>}
+  */
+  static from_bytes(bytes: Uint8Array): Promise<Vkeywitness>;
+
+  /**
+  * @param {Vkey} vkey
+  * @param {Ed25519Signature} signature
+  * @returns {Promise<Vkeywitness>}
+  */
+  static new(vkey, signature): Promise<Vkeywitness>;
+
+  /**
+  * @returns {Promise<Ed25519Signature>}
+  */
+  signature(): Promise<Ed25519Signature>;
+}
 
 export class Vkeywitnesses extends Ptr {
     /**
     * @returns {Promise<Vkeywitnesses>}
     */
-    static new(): Promise<Vkeywitnesses>
+    static new(): Promise<Vkeywitnesses>;
 
     /**
     * @returns {Promise<number>}
     */
-    len(): Promise<number>
+    len(): Promise<number>;
 
     /**
     * @param {Vkeywitness} item
     * @returns {Promise<void>}
     */
-    add(item: Vkeywitness): Promise<void>
+    add(item: Vkeywitness): Promise<void>;
 }
 
-// TODO
-export class BootstrapWitness extends Ptr {}
+export class BootstrapWitness extends Ptr {
+  /**
+  * @returns {Promise<Uint8Array>}
+  */
+  to_bytes(): Promise<Uint8Array>;
+
+  /**
+  * @param {Uint8Array} bytes
+  * @returns {Promise<BootstrapWitness>}
+  */
+  static from_bytes(bytes: Uint8Array): Promise<BootstrapWitness>;
+
+  /**
+  * @param {Vkey} vkey
+  * @param {Ed25519Signature} signature
+  * @param {Uint8Array} chainCode
+  * @param {Uint8Array} attributes
+  * @returns {Promise<BootstrapWitness>}
+  */
+  static new(
+    vkey: Vkey,
+    signature: Ed25519Signature,
+    chainCode: Uint8Array,
+    attributes: Uint8Array,
+  ): Promise<BootstrapWitness>
+}
 
 export class BootstrapWitnesses extends Ptr {
     /**
@@ -719,13 +888,13 @@ export class TransactionWitnessSet extends Ptr {
   * @param {BootstrapWitnesses} bootstraps
   * @returns {Promise<void>}
   */
-  async set_bootstraps(bootstraps: BootstrapWitnesses): Promise<void>
+  set_bootstraps(bootstraps: BootstrapWitnesses): Promise<void>
 
   /**
   * @param {Vkeywitnesses} bootstraps
   * @returns {Promise<void>}
   */
-  async set_vkeys(vkeywitnesses: Vkeywitnesses): Promise<void>
+  set_vkeys(vkeywitnesses: Vkeywitnesses): Promise<void>
 }
 
 export class TransactionMetadata extends Ptr {}
@@ -743,16 +912,41 @@ export class TransactionBody extends Ptr {
   to_bytes(): Promise<Uint8Array>;
 
   /**
+  * @returns {Promise<TransactionInputs>}
+  */
+  inputs(): Promise<TransactionInputs>
+
+  /**
   * @returns {Promise<TransactionOutputs>}
   */
   outputs(): Promise<TransactionOutputs>
+
+  /**
+  * @returns {Promise<BigNum>}
+  */
+  fee(): Promise<BigNum>
+
+  /**
+  * @returns {Promise<number>}
+  */
+  ttl(): Promise<number>
+
+  /**
+  * @returns {Promise<Certificates>}
+  */
+  certs(): Promise<Certificates>
+
+  /**
+  * @returns {Promise<Withdrawals>}
+  */
+  withdrawals(): Promise<Withdrawals>
 }
 
 export class Transaction extends Ptr {
   /**
   * @returns {Promise<TransactionBody>}
   */
-  async body(): Promise<TransactionBody>
+  body(): Promise<TransactionBody>
   /**
   * @param {TransactionBody} body
   * @param {TransactionWitnessSet} witnessSet
@@ -763,112 +957,152 @@ export class Transaction extends Ptr {
     body: TransactionBody,
     witnessSet: TransactionWitnessSet,
     metadata?: TransactionMetadata,
-  ): Promise<Transaction>
+  ): Promise<Transaction>;
 }
 
 export class TransactionBuilder extends Ptr {
   /**
   * @param {Ed25519KeyHash} hash
   * @param {TransactionInput} input
-  * @param {Coin} amount
+  * @param {BigNum} amount
   * @returns {Promise<void>}
   */
   add_key_input(
     hash: Ed25519KeyHash,
     input: TransactionInput,
-    amount: Coin,
-  ): Promise<void>
+    amount: BigNum,
+  ): Promise<void>;
 
   /**
   * @param {ByronAddress} hash
   * @param {TransactionInput} input
-  * @param {Coin} amount
+  * @param {BigNum} amount
   * @returns {Promise<void>}
   */
   add_key_input(
     hash: ByronAddress,
     input: TransactionInput,
-    amount: Coin,
-  ): Promise<void>
+    amount: BigNum,
+  ): Promise<void>;
 
   /**
   * @param {TransactionOutput} output
   * @returns {Promise<void>}
   */
-  add_output(
-    output: TransactionOutput,
-  ): Promise<void>
+  add_output(output: TransactionOutput): Promise<void>;
 
   /**
-  * @param {Coin} fee
+  * @param {TransactionOutput} output
+  * @returns {Promise<BigNum>}
+  */
+  fee_for_output(output: TransactionOutput): Promise<BigNum>;
+
+  /**
+  * @param {BigNum} fee
   * @returns {Promise<void>}
   */
-  set_fee(fee: Coin): Promise<void>
+  set_fee(fee: BigNum): Promise<void>;
 
   /**
   * @param {number} ttl
   * @returns {Promise<void>}
   */
-  set_ttl(ttl: number): Promise<void>
+  set_ttl(ttl: number): Promise<void>;
 
   /**
   * @param {Certificates} certs
   * @returns {Promise<void>}
   */
-  set_certs(certs: Certificates): Promise<void>
+  set_certs(certs: Certificates): Promise<void>;
+
+  /**
+  * @param {Withdrawals} certs
+  * @returns {Promise<void>}
+  */
+  set_withdrawals(withdrawals: Withdrawals): Promise<void>;
 
   /**
   * @param {LinearFee} linearFee
-  * @param {Coin} minimumUtxoVal
+  * @param {BigNum} minimumUtxoVal
   * @param {BigNum} poolDeposit
   * @param {BigNum} keyDeposit
   * @returns {Promise<TransactionBuilder>}
   */
   static new(
     linearFee: LinearFee,
-    minimumUtxoVal: Coin,
+    minimumUtxoVal: BigNum,
     poolDeposit: BigNum,
     keyDeposit: BigNum,
-  ): Promise<TransactionBuilder>
+  ): Promise<TransactionBuilder>;
 
   /**
-  * @returns {Promise<Coin>}
+  * @returns {Promise<BigNum>}
   */
-  get_explicit_input(): Promise<Coin>
+  get_explicit_input(): Promise<BigNum>;
 
   /**
-  * @returns {Promise<Coin>}
+  * @returns {Promise<BigNum>}
   */
-  get_implicit_input(): Promise<Coin>
+  get_implicit_input(): Promise<BigNum>;
 
   /**
-  * @returns {Promise<Coin>}
+  * @returns {Promise<BigNum>}
   */
-  get_explicit_output(): Promise<Coin>
+  get_explicit_output(): Promise<BigNum>;
 
   /**
-  * @returns {Promise<Coin>}
+  * @returns {Promise<BigNum>}
   */
-  get_deposit(): Promise<Coin>
+  get_deposit(): Promise<BigNum>;
 
   /**
-  * @returns {Promise<Coin>}
+  * @returns {Promise<BigNum>}
   */
-  get_fee_if_set(): Promise<Coin>
+  get_fee_if_set(): Promise<BigNum>;
 
   /**
   * @param {Address} address
   * @returns {Promise<boolean>}
   */
-  add_change_if_needed(address: Address)
+  add_change_if_needed(address: Address);
 
   /**
   * @returns {Promise<TransactionBody>}
   */
-  build(): Promise<TransactionBody>
+  build(): Promise<TransactionBody>;
 
   /**
-  * @returns {Promise<Coin>}
+  * @returns {Promise<BigNum>}
   */
-  min_fee(): Promise<Coin>
+  min_fee(): Promise<BigNum>;
+}
+
+export class Withdrawals extends Ptr {
+  /**
+  * @returns {Promise<Withdrawals>}
+  */
+  static new(): Promise<Withdrawals>;
+
+  /**
+  * @returns {Promise<number>}
+  */
+  len(): Promise<number>
+
+  /**
+  * @param {RewardAddress} key
+  * @param {BigNum} value
+  * @returns {Promise<BigNum>}
+  */
+  insert(key, value): Promise<BigNum>;
+
+  /**
+  * @param {RewardAddress} key
+  * @returns {Promise<BigNum | undefined>}
+  */
+  get(key: RewardAddress): Promise<BigNum | undefined>;
+
+  /**
+  * @returns {Promise<RewardAddresses>}
+  */
+  keys(): Promise<RewardAddresses>;
 }

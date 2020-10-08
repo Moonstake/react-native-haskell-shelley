@@ -1,4 +1,3 @@
-use super::primitive::ToPrimitiveObject;
 use super::ptr_j::*;
 use super::result::ToJniResult;
 use crate::panic::{handle_exception_result};
@@ -79,6 +78,51 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_certificateNewSt
       .typed_ref::<StakeDelegation>()
       .map(|stake_delegation| Certificate::new_stake_delegation(stake_delegation))
       .and_then(|certificate| certificate.rptr().jptr(&env))
+  })
+  .jresult(&env)
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_certificateAsStakeRegistration(
+  env: JNIEnv, _: JObject, certificate: JRPtr
+) -> jobject {
+  handle_exception_result(|| {
+    let certificate = certificate.rptr(&env)?;
+    certificate
+      .typed_ref::<Certificate>()
+      .map(|certificate| certificate.as_stake_registration())
+      .and_then(|stake_registration| stake_registration.rptr().jptr(&env))
+  })
+  .jresult(&env)
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_certificateAsStakeDeregistration(
+  env: JNIEnv, _: JObject, certificate: JRPtr
+) -> jobject {
+  handle_exception_result(|| {
+    let certificate = certificate.rptr(&env)?;
+    certificate
+      .typed_ref::<Certificate>()
+      .map(|certificate| certificate.as_stake_deregistration())
+      .and_then(|stake_deregistration| stake_deregistration.rptr().jptr(&env))
+  })
+  .jresult(&env)
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_certificateAsStakeDelegation(
+  env: JNIEnv, _: JObject, certificate: JRPtr
+) -> jobject {
+  handle_exception_result(|| {
+    let certificate = certificate.rptr(&env)?;
+    certificate
+      .typed_ref::<Certificate>()
+      .map(|certificate| certificate.as_stake_delegation())
+      .and_then(|stake_delegation| stake_delegation.rptr().jptr(&env))
   })
   .jresult(&env)
 }
