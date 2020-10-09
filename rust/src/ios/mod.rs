@@ -39,6 +39,7 @@ mod vkey;
 mod vkeywitness;
 mod vkeywitnesses;
 mod withdrawals;
+mod legacy_daedalus_private_key;
 // declare other modules here
 // mod transaction;
 

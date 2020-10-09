@@ -174,6 +174,11 @@ bool ed25519_signature_to_bytes(RPtr ed25519_signature, DataPtr *result, CharPtr
 
 void init_haskell_shelley_library(void);
 
+bool legacy_daedalus_private_key_from_bytes(const uint8_t *data,
+                                            uintptr_t len,
+                                            RPtr *result,
+                                            CharPtr *error);
+
 bool linear_fee_coefficient(RPtr rptr, RPtr *result, CharPtr *error);
 
 bool linear_fee_constant(RPtr rptr, RPtr *result, CharPtr *error);
