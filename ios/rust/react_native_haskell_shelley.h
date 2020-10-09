@@ -408,6 +408,12 @@ bool unit_interval_to_bytes(RPtr unit_interval, DataPtr *result, CharPtr *error)
 
 bool utils_hash_transaction(RPtr tx_body, RPtr *result, CharPtr *error);
 
+bool utils_make_daedalus_bootstrap_witness(RPtr tx_body_hash,
+                                           RPtr addr,
+                                           RPtr key,
+                                           RPtr *result,
+                                           CharPtr *error);
+
 bool utils_make_icarus_bootstrap_witness(RPtr tx_body_hash,
                                          RPtr addr,
                                          RPtr key,

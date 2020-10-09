@@ -7,9 +7,9 @@ use jni::sys::{jbyteArray, jobject};
 use jni::JNIEnv;
 use crate::utils::ToFromBytes;
 
-use cardano_serialization_lib::utils::{hash_transaction, make_vkey_witness, make_icarus_bootstrap_witness};
+use cardano_serialization_lib::utils::{hash_transaction, make_vkey_witness, make_icarus_bootstrap_witness, make_daedalus_bootstrap_witness};
 use cardano_serialization_lib::{TransactionBody};
-use cardano_serialization_lib::crypto::{Bip32PrivateKey, PrivateKey, TransactionHash};
+use cardano_serialization_lib::crypto::{Bip32PrivateKey, PrivateKey, TransactionHash, LegacyDaedalusPrivateKey};
 use cardano_serialization_lib::address::ByronAddress;
 
 // to/from bytes
@@ -91,6 +91,27 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_hashTransaction(
     tx_body
       .typed_ref::<TransactionBody>()
       .and_then(|tx_body| hash_transaction(tx_body).rptr().jptr(&env))
+  })
+  .jresult(&env)
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_makeDaedalusBootstrapWitness(
+  env: JNIEnv, _: JObject, tx_body_hash: JRPtr, addr: JRPtr, key: JRPtr
+) -> jobject {
+  handle_exception_result(|| {
+    let tx_body_hash = tx_body_hash.rptr(&env)?;
+    let addr = addr.rptr(&env)?;
+    let key = key.rptr(&env)?;
+    tx_body_hash.typed_ref::<TransactionHash>()
+    .zip(addr.typed_ref::<ByronAddress>())
+    .zip(key.typed_ref::<LegacyDaedalusPrivateKey>())
+    .and_then(
+      |((tx_body_hash, addr), key)| {
+        make_daedalus_bootstrap_witness(tx_body_hash, addr, key).rptr().jptr(&env)
+      }
+    )
   })
   .jresult(&env)
 }

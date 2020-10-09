@@ -66,6 +66,29 @@ export const make_icarus_bootstrap_witness = async (txBodyHash, addr, key) => {
 
 /**
 * @param {TransactionHash} txBodyHash
+* @param {ByronAddress} addr
+* @param {Bip32PrivateKey} key
+* @returns {Promise<BootstrapWitness>}
+*/
+export const make_daedalus_bootstrap_witness = async (txBodyHash, addr, key) => {
+  const txBodyHashPtr = Ptr._assertClass(txBodyHash, TransactionHash);
+  const addrPtr = Ptr._assertClass(addr, ByronAddress);
+  const keyPtr = Ptr._assertClass(key, LegacyDaedalusPrivateKey);
+  const ret = await HaskellShelley.makeDaedalusBootstrapWitness(txBodyHashPtr, addrPtr, keyPtr);
+  return Ptr._wrap(ret, BootstrapWitness);
+}
+export class LegacyDaedalusPrivateKey extends Ptr {
+  /**
+    * @param {Uint8Array} bytes
+    * @returns {Promise<LegacyDaedalusPrivateKey>}
+    */
+   static async from_bytes(bytes) {
+    const ret = await HaskellShelley.legacyDaedalusPrivateKeyFromBytes(b64FromUint8Array(bytes));
+    return Ptr._wrap(ret, LegacyDaedalusPrivateKey);
+    }
+}
+/**
+* @param {TransactionHash} txBodyHash
 * @param {PrivateKey} sk
 * @returns {Promise<Vkeywitness>}
 */

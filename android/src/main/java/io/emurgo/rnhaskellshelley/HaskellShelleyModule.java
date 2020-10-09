@@ -129,6 +129,15 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
                 .pour(promise);
     }
 
+     //
+    @ReactMethod
+    public final void legacyDaedalusPrivateKeyFromBytes(String bytes, Promise promise) {
+        Native.I
+                .legacyDaedalusPrivateKeyFromBytes(Base64.decode(bytes, Base64.DEFAULT))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+    
     // PrivateKey
 
     @ReactMethod
