@@ -103,6 +103,21 @@ export class PublicKey extends Ptr {
   hash(): Promise<Ed25519KeyHash>
 }
 
+export class LegacyDaedalusPrivateKey extends Ptr {
+  /**
+    * @param {Uint8Array} bytes
+    * @returns {Promise<Bip32PrivateKey>}
+    */
+  static from_bytes(bytes: Uint8Array): Promise<Bip32PrivateKey>;
+
+}
+
+export const make_daedalus_bootstrap_witness: (
+  txBodyHash: TransactionHash,
+  addr: ByronAddress,
+  key: LegacyDaedalusPrivateKey,
+) => Promise<BootstrapWitness>
+
 export class PrivateKey extends Ptr {
   /**
   * @returns {Promise<PublicKey>}

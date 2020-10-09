@@ -263,6 +263,8 @@ final class Native {
     public final native Result<RPtr> withdrawalsGet(RPtr withdrawals, RPtr key);
     public final native Result<RPtr> withdrawalsKeys(RPtr withdrawals);
 
+    //
+    public final native Result<RPtr> legacyDaedalusPrivateKeyFromBytes(byte[] bytes);
 
     public final native void ptrFree(RPtr ptr);
 }

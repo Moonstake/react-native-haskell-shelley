@@ -174,6 +174,11 @@ bool ed25519_signature_to_bytes(RPtr ed25519_signature, DataPtr *result, CharPtr
 
 void init_haskell_shelley_library(void);
 
+bool legacy_daedalus_private_key_from_bytes(const uint8_t *data,
+                                            uintptr_t len,
+                                            RPtr *result,
+                                            CharPtr *error);
+
 bool linear_fee_coefficient(RPtr rptr, RPtr *result, CharPtr *error);
 
 bool linear_fee_constant(RPtr rptr, RPtr *result, CharPtr *error);
@@ -407,6 +412,12 @@ bool unit_interval_new(RPtr numerator, RPtr denominator, RPtr *result, CharPtr *
 bool unit_interval_to_bytes(RPtr unit_interval, DataPtr *result, CharPtr *error);
 
 bool utils_hash_transaction(RPtr tx_body, RPtr *result, CharPtr *error);
+
+bool utils_make_daedalus_bootstrap_witness(RPtr tx_body_hash,
+                                           RPtr addr,
+                                           RPtr key,
+                                           RPtr *result,
+                                           CharPtr *error);
 
 bool utils_make_icarus_bootstrap_witness(RPtr tx_body_hash,
                                          RPtr addr,

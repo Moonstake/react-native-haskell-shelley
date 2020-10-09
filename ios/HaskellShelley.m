@@ -2000,6 +2000,32 @@ RCT_EXPORT_METHOD(ptrFree:(NSString *)ptr withResolve:(RCTPromiseResolveBlock)re
     resolve(nil);
 }
 
+RCT_EXPORT_METHOD(legacyDaedalusPrivateKeyFromBytes:(nonnull NSString *)bytesStr  withResolve:(RCTPromiseResolveBlock)resolve andReject:(RCTPromiseRejectBlock)reject)
+{
+    [[CSafeOperation new:^NSString*(NSString* bytesStr, CharPtr* error) {
+        RPtr result;
+        NSData* data = [NSData fromBase64:bytesStr];
+        return legacy_daedalus_private_key_from_bytes((uint8_t*)data.bytes, data.length, &result, error)
+            ? [NSString stringFromPtr:result]
+            : nil;
+    }] exec:bytesStr andResolve:resolve orReject:reject];
+}
+
+RCT_EXPORT_METHOD(makeDaedalusBootstrapWitness:(nonnull NSString *)txBodyHashPtr withAddr:(nonnull NSString *)addrPtr andKey:(nonnull NSString *)keyPtr withResolve:(RCTPromiseResolveBlock)resolve andReject:(RCTPromiseRejectBlock)reject)
+{
+    [[CSafeOperation new:^NSString*(NSArray* params, CharPtr* error) {
+        RPtr txBodyHash = [[params objectAtIndex:0] rPtr];
+        RPtr addr = [[params objectAtIndex:1] rPtr];
+        RPtr key = [[params objectAtIndex:2] rPtr];
+        RPtr result;
+       
+        return utils_make_daedalus_bootstrap_witness(txBodyHash, addr, key, &result, error)
+        ? [NSString stringFromPtr:result]
+        : nil;
+        
+    }] exec:@[txBodyHashPtr, addrPtr, keyPtr] andResolve:resolve orReject:reject];
+}
+
 + (void)initialize
 {
     if (self == [HaskellShelley class]) {
