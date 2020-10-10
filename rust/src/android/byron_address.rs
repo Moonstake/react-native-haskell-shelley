@@ -112,7 +112,7 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_byronAddressAttr
 #[allow(non_snake_case)]
 #[no_mangle]
 pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_byronAddressFromIcarusKey(
-  env: JNIEnv, _: JObject, bip_32_public_key: JRPtr, network: jint
+  env: JNIEnv, _: JObject, bip_32_public_key: JRPtr, network: jlong
 ) -> jobject {
   handle_exception_result(|| {
     let bip_32_public_key = bip_32_public_key.rptr(&env)?;
