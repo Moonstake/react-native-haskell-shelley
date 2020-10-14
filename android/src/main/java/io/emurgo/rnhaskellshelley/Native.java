@@ -68,7 +68,7 @@ final class Native {
     public final native Result<RPtr> byronAddressToAddress(RPtr byronAddress);
     public final native Result<Long> byronAddressByronProtocolMagic(RPtr byronAddress);
     public final native Result<byte[]> byronAddressAttributes(RPtr byronAddress);
-    public final native Result<RPtr> byronAddressIcarusFromKey(RPtr bip32PrivateKey, Integer network);
+    public final native Result<RPtr> byronAddressFromIcarusKey(RPtr bip32PrivateKey, long network);
 
     // Address
     public final native Result<byte[]> addressToBytes(RPtr address);
