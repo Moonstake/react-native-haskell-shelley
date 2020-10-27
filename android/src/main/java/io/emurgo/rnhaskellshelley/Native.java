@@ -16,6 +16,7 @@ final class Native {
     private native void initLibrary();
 
     // Utils
+        public final native Result<RPtr> makeDaedalusBootstrapWitness(RPtr txBodyHash, RPtr addr, RPtr key);
     public final native Result<RPtr> makeIcarusBootstrapWitness(RPtr txBodyHash, RPtr addr, RPtr key);
     public final native Result<RPtr> makeVkeyWitness(RPtr txBodyHash, RPtr sk);
     public final native Result<RPtr> hashTransaction(RPtr txBody);
