@@ -24,6 +24,13 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
     }
 
     // Utils
+    @ReactMethod
+    public final void  makeDaedalusBootstrapWitness(String txBodyHash, String addr, String key, Promise promise) {
+        Native.I
+                .makeDaedalusBootstrapWitness(new RPtr(txBodyHash), new RPtr(addr), new RPtr(key))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
 
     @ReactMethod
     public final void makeIcarusBootstrapWitness(String txBodyHash, String addr, String key, Promise promise) {
