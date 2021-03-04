@@ -1458,16 +1458,6 @@ RCT_EXPORT_METHOD(baseAddressStakeCred:(nonnull NSString *)ptr  withResolve:(RCT
     }] exec:ptr andResolve:resolve orReject:reject];
 }
 
-RCT_EXPORT_METHOD(baseAddressToAddress:(nonnull NSString *)ptr  withResolve:(RCTPromiseResolveBlock)resolve andReject:(RCTPromiseRejectBlock)reject)
-{
-    [[CSafeOperation new:^NSString*(NSString* ptr, CharPtr* error) {
-        RPtr result;
-        RPtr baseAddress = [ptr rPtr];
-        return base_address_to_address(baseAddress, &result, error)
-            ? [NSString stringFromPtr:result]
-            : nil;
-    }] exec:ptr andResolve:resolve orReject:reject];
-}
 
 RCT_EXPORT_METHOD(baseAddressFromAddress:(nonnull NSString *)addrPtr withResolve:(RCTPromiseResolveBlock)resolve andReject:(RCTPromiseRejectBlock)reject)
 {
@@ -2475,26 +2465,6 @@ RCT_EXPORT_METHOD(ptrFree:(NSString *)ptr withResolve:(RCTPromiseResolveBlock)re
 }
 
 
-RCT_EXPORT_METHOD(bip32PublicKeyToRawKey:(nonnull NSString *)bip32PrivateKeyPtr withResolve:(RCTPromiseResolveBlock)resolve andReject:(RCTPromiseRejectBlock)reject)
-{
-    [[CSafeOperation new:^NSString*(NSString* bip32PrivateKeyPtr, CharPtr* error) {
-        RPtr result;
-        RPtr bip32PrivateKey = [bip32PrivateKeyPtr rPtr];
-        return bip_32_public_key_to_raw_key(bip32PrivateKey, &result, error)
-            ? [NSString stringFromPtr:result]
-            : nil;
-    }] exec:bip32PrivateKeyPtr andResolve:resolve orReject:reject];
-}
-RCT_EXPORT_METHOD(publicKeyHash:(nonnull NSString *)ptr  withResolve:(RCTPromiseResolveBlock)resolve andReject:(RCTPromiseRejectBlock)reject)
-{
-    [[CSafeOperation new:^NSString*(NSString* ptr, CharPtr* error) {
-        RPtr result;
-        RPtr publicKey = [ptr rPtr];
-        return public_key_hash(publicKey, &result, error)
-            ? [NSString stringFromPtr:result]
-            : nil;
-    }] exec:ptr andResolve:resolve orReject:reject];
-}
 RCT_EXPORT_METHOD(baseAddressToAddress:(nonnull NSString *)ptr  withResolve:(RCTPromiseResolveBlock)resolve andReject:(RCTPromiseRejectBlock)reject)
 {
     [[CSafeOperation new:^NSString*(NSString* ptr, CharPtr* error) {

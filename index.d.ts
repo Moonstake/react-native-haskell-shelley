@@ -418,6 +418,17 @@ export class ByronAddress extends Ptr {
   * @returns {Promise<Uint8Array>}
   */
   attributes(): Promise<Uint8Array>;
+
+  /**
+  * @param {Bip32PublicKey} key
+  * @param {number} network
+  * @returns {Promise<ByronAddress | undefined>}
+  */
+  static async from_icarus_key(key, network) {
+      const keyPtr = Ptr._assertClass(key, Bip32PublicKey);
+      const ret = await HaskellShelley.byronAddressFromIcarusKey(keyPtr, network);
+      return Ptr._wrap(ret, ByronAddress);
+  }
 }
 
 export class Address extends Ptr {
@@ -1390,19 +1401,6 @@ export class Withdrawals extends Ptr {
 }
 
 
-
-export class Bip32PublicKey extends Ptr {
-  /**
-  * @returns {Promise<PublicKey>}
-  */
-  to_raw_key(): Promise<PublicKey>;
-}
-export class PublicKey extends Ptr {
-  /**
-  * @returns {Promise<Ed25519KeyHash>}
-  */
-  hash(): Promise<Ed25519KeyHash>;
-}
 export class LegacyDaedalusPrivateKey extends Ptr {
     /**
       * @param {Uint8Array} bytes

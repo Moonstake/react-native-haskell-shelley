@@ -2148,25 +2148,7 @@ export class Withdrawals extends Ptr {
   }
 }
 
-export class PublicKey extends Ptr {
-   /**
-    * @returns {Promise<Ed25519KeyHash>}
-    */
-  async hash() {
-    const ret = await HaskellShelley.publicKeyHash(this.ptr);
-    return Ptr._wrap(ret, Ed25519KeyHash);
-  }
-}
 
-export class Bip32PublicKey extends Ptr {
-  /**
-    * @returns {Promise<PrivateKey>}
-    */
-   async to_raw_key() {
-    const ret = await HaskellShelley.bip32PublicKeyToRawKey(this.ptr);
-    return Ptr._wrap(ret, PublicKey);
-  }
-}
 
 /**
 * @param {TransactionHash} txBodyHash
