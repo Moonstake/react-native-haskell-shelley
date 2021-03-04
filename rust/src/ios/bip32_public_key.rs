@@ -91,3 +91,15 @@ pub unsafe extern "C" fn bip32_public_key_chaincode(
   .map(|bytes| bytes.into())
   .response(result, error)
 }
+#[no_mangle]
+pub unsafe extern "C" fn bip_32_public_key_to_raw_key(
+  bip_32_public_key: RPtr, result: &mut RPtr, error: &mut CharPtr
+) -> bool {
+  handle_exception_result(|| {
+    bip_32_public_key
+      .typed_ref::<Bip32PublicKey>()
+      .map(|bip_32_public_key| bip_32_public_key.to_raw_key())
+  })
+  .map(|public_key| public_key.rptr())
+  .response(result, error)
+}

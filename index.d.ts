@@ -724,6 +724,15 @@ export class StakeDelegation extends Ptr {
   * @returns {Promise<StakeDelegation>}
   */
   static new(stakeCredential, poolKeyHash): Promise<StakeDelegation>
+  static from_address(addr): Promise<ByronAddress | undefined>
+
+  /**
+  * @param {Bip32PublicKey} key
+  * @param {number} network
+  * @returns {Promise<ByronAddress | undefined>}
+  */
+ static from_icarus_key(key, network): Promise<ByronAddress | undefined>
+  
 }
 
 export class Certificate extends Ptr {
@@ -838,6 +847,10 @@ export class BaseAddress extends Ptr {
   * @returns {Promise<BaseAddress | undefined>}
   */
   static from_address(addr): Promise<BaseAddress | undefined>
+  /**
+  * @returns {Promise<Address>}
+  */
+  static to_address(): Promise<Address>
 }
 
 export class RewardAddress extends Ptr {
@@ -1183,7 +1196,11 @@ export class Transaction extends Ptr {
     body: TransactionBody,
     witnessSet: TransactionWitnessSet,
     metadata?: TransactionMetadata,
-  ): Promise<Transaction>;
+  ): Promise<Transaction>
+  /**
+    * @returns {Promise<Uint8Array>}
+    */
+  to_bytes(): Promise<Uint8Array>;
 }
 
 export class TransactionBuilder extends Ptr {
@@ -1371,3 +1388,33 @@ export class Withdrawals extends Ptr {
   */
   keys(): Promise<RewardAddresses>;
 }
+
+
+
+export class Bip32PublicKey extends Ptr {
+  /**
+  * @returns {Promise<PublicKey>}
+  */
+  to_raw_key(): Promise<PublicKey>;
+}
+export class PublicKey extends Ptr {
+  /**
+  * @returns {Promise<Ed25519KeyHash>}
+  */
+  hash(): Promise<Ed25519KeyHash>;
+}
+export class LegacyDaedalusPrivateKey extends Ptr {
+    /**
+      * @param {Uint8Array} bytes
+      * @returns {Promise<Bip32PrivateKey>}
+      */
+    static from_bytes(bytes: Uint8Array): Promise<Bip32PrivateKey>;
+
+}
+
+
+export const make_daedalus_bootstrap_witness: (
+  txBodyHash: TransactionHash,
+  addr: ByronAddress,
+  key: LegacyDaedalusPrivateKey,
+) => Promise<BootstrapWitness>

@@ -4,6 +4,7 @@ use super::string::*;
 use crate::panic::*;
 use crate::ptr::{RPtr, RPtrRepresentable};
 use cardano_serialization_lib::address::{Address, ByronAddress};
+use cardano_serialization_lib::crypto::Bip32PublicKey;
 
 #[no_mangle]
 pub unsafe extern "C" fn byron_address_to_base58(
@@ -77,4 +78,17 @@ pub unsafe extern "C" fn byron_address_attributes(
   handle_exception_result(|| rptr.typed_ref::<ByronAddress>().map(|byron_addr| byron_addr.attributes()))
   .map(|bytes| bytes.into())
   .response(result, error)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn byron_address_from_icarus_key(
+  bip_32_public_key: RPtr, network: u32, result: &mut RPtr, error: &mut CharPtr
+) -> bool {
+      handle_exception_result(|| {
+        bip_32_public_key
+          .typed_ref::<Bip32PublicKey>()
+          .map(|addr| ByronAddress::icarus_from_key(addr, network))
+        })
+        .map(|byron_address| byron_address.rptr())
+        .response(result, error)     
 }
