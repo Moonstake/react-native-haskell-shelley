@@ -32,6 +32,13 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
                 .map(RPtr::toJs)
                 .pour(promise);
     }
+    @ReactMethod
+    public final void makeDaedalusBootstrapWitness(String txBodyHash, String addr, String key, Promise promise) {
+        Native.I
+                .makeDaedalusBootstrapWitness(new RPtr(txBodyHash), new RPtr(addr), new RPtr(key))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
 
     @ReactMethod
     public final void makeVkeyWitness(String txBodyHash, String sk, Promise promise) {
@@ -234,6 +241,13 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
     public final void assetNamesNew(Promise promise) {
         Native.I
                 .assetNamesNew()
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+    @ReactMethod
+    public final void byronAddressFromIcarusKey(String bip32PublicKey, Integer network, Promise promise) {
+        Native.I
+                .byronAddressFromIcarusKey(new RPtr(bip32PublicKey), network)
                 .map(RPtr::toJs)
                 .pour(promise);
     }
@@ -1171,6 +1185,7 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
                 .rewardAddressesAdd(new RPtr(rewardAddresses), new RPtr(item))
                 .pour(promise);
     }
+    
 
     // UnitInterval
 
@@ -1795,5 +1810,15 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
                 .map(RPtr::toJs)
                 .pour(promise);
     }
+    
+    //
+    @ReactMethod
+    public final void legacyDaedalusPrivateKeyFromBytes(String bytes, Promise promise) {
+        Native.I
+                .legacyDaedalusPrivateKeyFromBytes(Base64.decode(bytes, Base64.DEFAULT))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
 
 }

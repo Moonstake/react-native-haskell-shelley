@@ -145,7 +145,7 @@ afterEvaluate { project ->
         include '**/*.java'
     }
 
-    android.libraryVariants.all { variant ->
+    /* android.libraryVariants.all { variant ->
         def name = variant.name.capitalize()
         def javaCompileTask = variant.javaCompileProvider.get()
 
@@ -159,7 +159,7 @@ afterEvaluate { project ->
         }
         def buildType = "${variant.buildType.name.capitalize()}"
         tasks["generate${productFlavor}${buildType}Assets"].dependsOn(tasks["cargoBuild"])
-    }
+    }*/
 
     artifacts {
         archives androidSourcesJar
