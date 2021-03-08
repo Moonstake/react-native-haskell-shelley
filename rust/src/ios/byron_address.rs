@@ -81,7 +81,7 @@ pub unsafe extern "C" fn byron_address_attributes(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn byron_address_icarus_from_key(
+pub unsafe extern "C" fn byron_address_from_icarus_key(
   bip_32_public_key: RPtr, network: u32, result: &mut RPtr, error: &mut CharPtr
 ) -> bool {
       handle_exception_result(|| {
@@ -90,6 +90,5 @@ pub unsafe extern "C" fn byron_address_icarus_from_key(
           .map(|addr| ByronAddress::icarus_from_key(addr, network))
         })
         .map(|byron_address| byron_address.rptr())
-        .response(result, error)
-     
+        .response(result, error)     
 }

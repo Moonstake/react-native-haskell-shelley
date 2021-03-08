@@ -1,5 +1,5 @@
 use jni::objects::{JObject, JString};
-use jni::sys::{jobject, jboolean, jlong};
+use jni::sys::{jobject, jboolean, jlong, jint};
 use jni::JNIEnv;
 use super::ptr_j::*;
 use super::result::ToJniResult;
@@ -9,6 +9,7 @@ use crate::panic::{handle_exception_result, ToResult};
 use crate::ptr::RPtrRepresentable;
 use cardano_serialization_lib::address::{Address, ByronAddress};
 use cardano_serialization_lib::crypto::Bip32PublicKey;
+
 
 #[allow(non_snake_case)]
 #[no_mangle]
@@ -112,7 +113,7 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_byronAddressAttr
 #[allow(non_snake_case)]
 #[no_mangle]
 pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_byronAddressFromIcarusKey(
-  env: JNIEnv, _: JObject, bip_32_public_key: JRPtr, network: jlong
+  env: JNIEnv, _: JObject, bip_32_public_key: JRPtr, network: jint
 ) -> jobject {
   handle_exception_result(|| {
     let bip_32_public_key = bip_32_public_key.rptr(&env)?;

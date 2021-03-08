@@ -6,7 +6,7 @@ use super::ptr_j::*;
 use crate::panic::{handle_exception_result};
 use crate::ptr::RPtrRepresentable;
 use jni::objects::{JObject};
-use jni::sys::{jbyteArray, jobject, jint};
+use jni::sys::{jbyteArray, jobject, jlong};
 use jni::JNIEnv;
 use cardano_serialization_lib::{TransactionBody};
 use cardano_serialization_lib::error::{DeserializeError};
@@ -83,8 +83,13 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_transactionBodyT
     let rptr = ptr.rptr(&env)?;
     rptr
       .typed_ref::<TransactionBody>()
-      .map(|tx_body| tx_body.ttl())
-      .and_then(|ttl| (ttl as jint).jobject(&env))
+      .map(|tx_body| tx_body.ttl().map(|ttl| (ttl as jlong)))
+      .and_then(|ttl| {
+        match ttl {
+          Some(ttl) => ttl.jobject(&env),
+          None => Ok(JObject::null())
+        }
+      })
   })
   .jresult(&env)
 }

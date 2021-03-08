@@ -37,7 +37,7 @@ pub unsafe extern "C" fn unit_interval_new(
         denominator.typed_ref::<BigNum>()
       )
       .map(|(numerator, denominator)| {
-        UnitInterval::new(numerator, denominator)
+        UnitInterval::new(&numerator, &denominator)
       })
   })
   .map(|unit_interval| unit_interval.rptr())

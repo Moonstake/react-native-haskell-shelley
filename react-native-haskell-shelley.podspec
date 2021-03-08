@@ -23,11 +23,11 @@ Pod::Spec.new do |s|
 
   s.module_name = 'HaskellShelley'
 
-  # s.script_phase = {
-  #   :name => "Build Rust Binary",
-  #   :script => 'bash "${PODS_TARGET_SRCROOT}/ios/build.sh"',
-  #   :execution_position => :before_compile
-  # }
+  #s.script_phase = {
+  #  :name => "Build Rust Binary",
+  #  :script => 'bash "${PODS_TARGET_SRCROOT}/ios/build.sh"',
+  #  :execution_position => :before_compile
+  #}
 
   s.pod_target_xcconfig = {
     "HEADER_SEARCH_PATHS" => "${PODS_TARGET_SRCROOT}/ios/rust",
@@ -35,6 +35,7 @@ Pod::Spec.new do |s|
     "OTHER_LIBTOOLFLAGS" => "-lreact_native_haskell_shelley",
     "ENABLE_BITCODE" => "NO"
   }
+
 
   s.preserve_paths = "rust/**/*"
 

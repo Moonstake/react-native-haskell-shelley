@@ -2,7 +2,7 @@ use super::ptr_j::*;
 use super::result::ToJniResult;
 use super::string::ToJniString;
 use super::string::ToString;
-use crate::panic::{handle_exception_result, ToResult};
+use crate::panic::{handle_exception_result, ToResult, Zip};
 use crate::ptr::RPtrRepresentable;
 use jni::objects::{JObject, JString};
 use jni::sys::{jbyteArray, jlong, jobject};

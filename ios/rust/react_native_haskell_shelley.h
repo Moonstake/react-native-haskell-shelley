@@ -33,6 +33,32 @@ bool address_to_bech32_with_prefix(RPtr rptr, CharPtr prefix, CharPtr *result, C
 
 bool address_to_bytes(RPtr address, DataPtr *result, CharPtr *error);
 
+bool asset_name_from_bytes(const uint8_t *data, uintptr_t len, RPtr *result, CharPtr *error);
+
+bool asset_name_name(RPtr asset_name, DataPtr *result, CharPtr *error);
+
+bool asset_name_new(const uint8_t *data, uintptr_t len, RPtr *result, CharPtr *error);
+
+bool asset_name_to_bytes(RPtr asset_name, DataPtr *result, CharPtr *error);
+
+bool asset_names_add(RPtr *asset_names, RPtr item, CharPtr *error);
+
+bool asset_names_get(RPtr asset_names, uintptr_t index, RPtr *result, CharPtr *error);
+
+bool asset_names_len(RPtr asset_names, uintptr_t *result, CharPtr *error);
+
+bool asset_names_new(RPtr *result, CharPtr *error);
+
+bool assets_get(RPtr assets, RPtr key, RPtr *result, CharPtr *error);
+
+bool assets_insert(RPtr assets, RPtr key, RPtr value, RPtr *result, CharPtr *error);
+
+bool assets_keys(RPtr assets, RPtr *result, CharPtr *error);
+
+bool assets_len(RPtr assets, uintptr_t *result, CharPtr *error);
+
+bool assets_new(RPtr *result, CharPtr *error);
+
 bool base_address_from_address(RPtr rptr, RPtr *result, CharPtr *error);
 
 bool base_address_new(uint8_t network, RPtr payment, RPtr stake, RPtr *result, CharPtr *error);
@@ -46,6 +72,10 @@ bool base_address_to_address(RPtr base_address, RPtr *result, CharPtr *error);
 bool big_num_checked_add(RPtr big_num, RPtr other, RPtr *result, CharPtr *error);
 
 bool big_num_checked_sub(RPtr big_num, RPtr other, RPtr *result, CharPtr *error);
+
+bool big_num_clamped_sub(RPtr big_num, RPtr other, RPtr *result, CharPtr *error);
+
+bool big_num_compare(RPtr big_num, RPtr rhs, int8_t *result, CharPtr *error);
 
 bool big_num_from_str(CharPtr chars, RPtr *result, CharPtr *error);
 
@@ -94,6 +124,8 @@ bool bip_32_private_key_to_public(RPtr bip_32_private_key, RPtr *result, CharPtr
 
 bool bip_32_private_key_to_raw_key(RPtr bip_32_private_key, RPtr *result, CharPtr *error);
 
+bool bip_32_public_key_to_raw_key(RPtr bip_32_public_key, RPtr *result, CharPtr *error);
+
 bool bootstrap_witness_from_bytes(const uint8_t *data, uintptr_t len, RPtr *result, CharPtr *error);
 
 bool bootstrap_witness_new(RPtr vkey,
@@ -121,7 +153,7 @@ bool byron_address_from_address(RPtr rptr, RPtr *result, CharPtr *error);
 
 bool byron_address_from_base58(CharPtr chars, RPtr *result, CharPtr *error);
 
-bool byron_address_icarus_from_key(RPtr bip_32_public_key,
+bool byron_address_from_icarus_key(RPtr bip_32_public_key,
                                    uint32_t network,
                                    RPtr *result,
                                    CharPtr *error);
@@ -185,6 +217,18 @@ bool linear_fee_constant(RPtr rptr, RPtr *result, CharPtr *error);
 
 bool linear_fee_new(RPtr coefficient, RPtr constant, RPtr *result, CharPtr *error);
 
+bool multi_asset_get(RPtr multi_asset, RPtr key, RPtr *result, CharPtr *error);
+
+bool multi_asset_insert(RPtr multi_asset, RPtr key, RPtr value, RPtr *result, CharPtr *error);
+
+bool multi_asset_keys(RPtr multi_asset, RPtr *result, CharPtr *error);
+
+bool multi_asset_len(RPtr multi_asset, uintptr_t *result, CharPtr *error);
+
+bool multi_asset_new(RPtr *result, CharPtr *error);
+
+bool multi_asset_sub(RPtr multi_asset, RPtr other, RPtr *result, CharPtr *error);
+
 bool private_key_as_bytes(RPtr key, DataPtr *result, CharPtr *error);
 
 bool private_key_from_extended_bytes(const uint8_t *data,
@@ -229,6 +273,18 @@ uintptr_t rptr_into_usize(RPtr ptr);
 bool script_hash_from_bytes(const uint8_t *data, uintptr_t len, RPtr *result, CharPtr *error);
 
 bool script_hash_to_bytes(RPtr script_hash, DataPtr *result, CharPtr *error);
+
+bool script_hashes_add(RPtr *script_hashes, RPtr item, CharPtr *error);
+
+bool script_hashes_from_bytes(const uint8_t *data, uintptr_t len, RPtr *result, CharPtr *error);
+
+bool script_hashes_get(RPtr script_hashes, uintptr_t index, RPtr *result, CharPtr *error);
+
+bool script_hashes_len(RPtr script_hashes, uintptr_t *result, CharPtr *error);
+
+bool script_hashes_new(RPtr *result, CharPtr *error);
+
+bool script_hashes_to_bytes(RPtr script_hashes, DataPtr *result, CharPtr *error);
 
 bool stake_credential_from_bytes(const uint8_t *data, uintptr_t len, RPtr *result, CharPtr *error);
 
@@ -305,6 +361,12 @@ bool transaction_builder_add_change_if_needed(RPtr rptr,
                                               bool *result,
                                               CharPtr *error);
 
+bool transaction_builder_add_input(RPtr tx_builder,
+                                   RPtr address,
+                                   RPtr input,
+                                   RPtr amount,
+                                   CharPtr *error);
+
 bool transaction_builder_add_key_input(RPtr tx_builder,
                                        RPtr hash,
                                        RPtr input,
@@ -313,7 +375,20 @@ bool transaction_builder_add_key_input(RPtr tx_builder,
 
 bool transaction_builder_add_output(RPtr tx_builder, RPtr output, CharPtr *error);
 
+bool transaction_builder_add_script_input(RPtr tx_builder,
+                                          RPtr hash,
+                                          RPtr input,
+                                          RPtr amount,
+                                          CharPtr *error);
+
 bool transaction_builder_build(RPtr rptr, RPtr *result, CharPtr *error);
+
+bool transaction_builder_fee_for_input(RPtr tx_builder,
+                                       RPtr address,
+                                       RPtr input,
+                                       RPtr amount,
+                                       RPtr *result,
+                                       CharPtr *error);
 
 bool transaction_builder_fee_for_output(RPtr rptr, RPtr output, RPtr *result, CharPtr *error);
 
@@ -340,7 +415,11 @@ bool transaction_builder_set_certs(RPtr tx_builder, RPtr certs, CharPtr *error);
 
 bool transaction_builder_set_fee(RPtr tx_builder, RPtr fee, CharPtr *error);
 
+bool transaction_builder_set_metadata(RPtr tx_builder, RPtr metadata, CharPtr *error);
+
 bool transaction_builder_set_ttl(RPtr tx_builder, uint32_t ttl, CharPtr *error);
+
+bool transaction_builder_set_validity_start_interval(RPtr tx_builder, uint32_t vst, CharPtr *error);
 
 bool transaction_builder_set_withdrawals(RPtr tx_builder, RPtr withdrawals, CharPtr *error);
 
@@ -426,6 +505,26 @@ bool utils_make_icarus_bootstrap_witness(RPtr tx_body_hash,
                                          CharPtr *error);
 
 bool utils_make_vkey_witness(RPtr tx_body_hash, RPtr sk, RPtr *result, CharPtr *error);
+
+bool utils_min_ada_required(RPtr assets, RPtr min_utxo_val, RPtr *result, CharPtr *error);
+
+bool value_checked_add(RPtr value, RPtr rhs, RPtr *result, CharPtr *error);
+
+bool value_checked_sub(RPtr value, RPtr rhs, RPtr *result, CharPtr *error);
+
+bool value_clamped_sub(RPtr value, RPtr rhs, RPtr *result, CharPtr *error);
+
+bool value_coin(RPtr value, RPtr *result, CharPtr *error);
+
+bool value_compare(RPtr value, RPtr rhs, int8_t *result, CharPtr *error);
+
+bool value_multiasset(RPtr value, RPtr *result, CharPtr *error);
+
+bool value_new(RPtr coin, RPtr *result, CharPtr *error);
+
+bool value_set_coin(RPtr value, RPtr coin, CharPtr *error);
+
+bool value_set_multiasset(RPtr value, RPtr multiasset, CharPtr *error);
 
 bool vkey_new(RPtr pk, RPtr *result, CharPtr *error);
 

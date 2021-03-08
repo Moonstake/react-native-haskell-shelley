@@ -24,18 +24,18 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
     }
 
     // Utils
-    @ReactMethod
-    public final void  makeDaedalusBootstrapWitness(String txBodyHash, String addr, String key, Promise promise) {
-        Native.I
-                .makeDaedalusBootstrapWitness(new RPtr(txBodyHash), new RPtr(addr), new RPtr(key))
-                .map(RPtr::toJs)
-                .pour(promise);
-    }
 
     @ReactMethod
     public final void makeIcarusBootstrapWitness(String txBodyHash, String addr, String key, Promise promise) {
         Native.I
                 .makeIcarusBootstrapWitness(new RPtr(txBodyHash), new RPtr(addr), new RPtr(key))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+    @ReactMethod
+    public final void makeDaedalusBootstrapWitness(String txBodyHash, String addr, String key, Promise promise) {
+        Native.I
+                .makeDaedalusBootstrapWitness(new RPtr(txBodyHash), new RPtr(addr), new RPtr(key))
                 .map(RPtr::toJs)
                 .pour(promise);
     }
@@ -52,6 +52,14 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
     public final void hashTransaction(String txBody, Promise promise) {
         Native.I
                 .hashTransaction(new RPtr(txBody))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void minAdaRequired(String assets, String minimumUtxoVal, Promise promise) {
+        Native.I
+                .minAdaRequired(new RPtr(assets), new RPtr(minimumUtxoVal))
                 .map(RPtr::toJs)
                 .pour(promise);
     }
@@ -86,6 +94,184 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
         Native.I
                 .bigNumCheckedSub(new RPtr(bigNumPtr), new RPtr(otherPtr))
                 .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void bigNumClampedSub(String bigNumPtr, String otherPtr, Promise promise) {
+        Native.I
+                .bigNumClampedSub(new RPtr(bigNumPtr), new RPtr(otherPtr))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void bigNumCompare(String bigNumPtr, String rhsPtr, Promise promise) {
+        Native.I
+                .bigNumCompare(new RPtr(bigNumPtr), new RPtr(rhsPtr))
+                .pour(promise);
+    }
+
+    // Value
+
+    @ReactMethod
+    public final void valueNew(String coin, Promise promise) {
+        Native.I
+                .valueNew(new RPtr(coin))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void valueCoin(String valuePtr, Promise promise) {
+        Native.I
+                .valueCoin(new RPtr(valuePtr))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void valueSetCoin(String valuePtr, String coinPtr, Promise promise) {
+        Native.I
+                .valueSetCoin(new RPtr(valuePtr), new RPtr(coinPtr))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void valueMultiasset(String valuePtr, Promise promise) {
+        Native.I
+                .valueMultiasset(new RPtr(valuePtr))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void valueSetMultiasset(String valuePtr, String multiassetPtr, Promise promise) {
+        Native.I
+                .valueSetMultiasset(new RPtr(valuePtr), new RPtr(multiassetPtr))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void valueCheckedAdd(String valuePtr, String rhsPtr, Promise promise) {
+        Native.I
+                .valueCheckedAdd(new RPtr(valuePtr), new RPtr(rhsPtr))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void valueCheckedSub(String valuePtr, String rhsPtr, Promise promise) {
+        Native.I
+                .valueCheckedSub(new RPtr(valuePtr), new RPtr(rhsPtr))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void valueClampedSub(String valuePtr, String rhsPtr, Promise promise) {
+        Native.I
+                .valueClampedSub(new RPtr(valuePtr), new RPtr(rhsPtr))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void valueCompare(String valuePtr, String rhsPtr, Promise promise) {
+        Native.I
+                .valueCompare(new RPtr(valuePtr), new RPtr(rhsPtr))
+                .pour(promise);
+    }
+
+    // AssetName
+
+    @ReactMethod
+    public final void assetNameNew(String bytes, Promise promise) {
+        Native.I
+                .assetNameNew(Base64.decode(bytes, Base64.DEFAULT))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void assetNameToBytes(String assetName, Promise promise) {
+        Native.I
+                .assetNameToBytes(new RPtr(assetName))
+                .map(bytes -> Base64.encodeToString(bytes, Base64.DEFAULT))
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void assetNameFromBytes(String bytes, Promise promise) {
+        Native.I
+                .assetNameFromBytes(Base64.decode(bytes, Base64.DEFAULT))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void assetNameName(String assetName, Promise promise) {
+        Native.I
+                .assetNameName(new RPtr(assetName))
+                .map(bytes -> Base64.encodeToString(bytes, Base64.DEFAULT))
+                .pour(promise);
+    }
+
+    // AssetNames
+
+    // @ReactMethod
+    // public final void assetNamesToBytes(String assetNames, Promise promise) {
+    //     Native.I
+    //             .assetNamesToBytes(new RPtr(assetNames))
+    //             .map(bytes -> Base64.encodeToString(bytes, Base64.DEFAULT))
+    //             .pour(promise);
+    // }
+    //
+    // @ReactMethod
+    // public final void assetNamesFromBytes(String bytes, Promise promise) {
+    //     Native.I
+    //             .assetNamesFromBytes(Base64.decode(bytes, Base64.DEFAULT))
+    //             .map(RPtr::toJs)
+    //             .pour(promise);
+    // }
+
+    @ReactMethod
+    public final void assetNamesNew(Promise promise) {
+        Native.I
+                .assetNamesNew()
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+    @ReactMethod
+    public final void byronAddressFromIcarusKey(String bip32PublicKey, Integer network, Promise promise) {
+        Native.I
+                .byronAddressFromIcarusKey(new RPtr(bip32PublicKey), network)
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void assetNamesLen(String assetNames, Promise promise) {
+        Native.I
+                .assetNamesLen(new RPtr(assetNames))
+                .map(Long::intValue)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void assetNamesGet(String assetNames, Integer index, Promise promise) {
+        Native.I
+                .assetNamesGet(new RPtr(assetNames), index)
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void assetNamesAdd(String assetNames, String item, Promise promise) {
+        Native.I
+                .assetNamesAdd(new RPtr(assetNames), new RPtr(item))
                 .pour(promise);
     }
 
@@ -136,15 +322,6 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
                 .pour(promise);
     }
 
-     //
-    @ReactMethod
-    public final void legacyDaedalusPrivateKeyFromBytes(String bytes, Promise promise) {
-        Native.I
-                .legacyDaedalusPrivateKeyFromBytes(Base64.decode(bytes, Base64.DEFAULT))
-                .map(RPtr::toJs)
-                .pour(promise);
-    }
-    
     // PrivateKey
 
     @ReactMethod
@@ -358,14 +535,6 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
                 .pour(promise);
     }
 
-     @ReactMethod
-    public final void byronAddressFromIcarusKey(String bip32PublicKey, Double network, Promise promise) {
-        Native.I
-                .byronAddressFromIcarusKey(new RPtr(bip32PublicKey), network.longValue())
-                .map(RPtr::toJs)
-                .pour(promise);
-    }
-
     // Address
 
     @ReactMethod
@@ -463,6 +632,147 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
     public final void scriptHashFromBytes(String bytes, Promise promise) {
         Native.I
                 .scriptHashFromBytes(Base64.decode(bytes, Base64.DEFAULT))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    // ScriptHashes
+
+    @ReactMethod
+    public final void scriptHashesToBytes(String scriptHashes, Promise promise) {
+        Native.I
+                .scriptHashesToBytes(new RPtr(scriptHashes))
+                .map(bytes -> Base64.encodeToString(bytes, Base64.DEFAULT))
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void scriptHashesFromBytes(String bytes, Promise promise) {
+        Native.I
+                .scriptHashesFromBytes(Base64.decode(bytes, Base64.DEFAULT))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void scriptHashesNew(Promise promise) {
+        Native.I
+                .scriptHashesNew()
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void scriptHashesLen(String scriptHashes, Promise promise) {
+        Native.I
+                .scriptHashesLen(new RPtr(scriptHashes))
+                .map(Long::intValue)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void scriptHashesGet(String scriptHashes, Integer index, Promise promise) {
+        Native.I
+                .scriptHashesGet(new RPtr(scriptHashes), index)
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void scriptHashesAdd(String scriptHashes, String item, Promise promise) {
+        Native.I
+                .scriptHashesAdd(new RPtr(scriptHashes), new RPtr(item))
+                .pour(promise);
+    }
+
+    // Assets
+
+    @ReactMethod
+    public final void assetsNew(Promise promise) {
+        Native.I
+                .assetsNew()
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void assetsLen(String assets, Promise promise) {
+        Native.I
+                .assetsLen(new RPtr(assets))
+                .map(Long::intValue)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void assetsInsert(String assets, String key, String value, Promise promise) {
+        Native.I
+                .assetsInsert(new RPtr(assets), new RPtr(key), new RPtr(value))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void assetsGet(String assets, String key, Promise promise) {
+        Native.I
+                .assetsGet(new RPtr(assets), new RPtr(key))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void assetsKeys(String assets, Promise promise) {
+        Native.I
+                .assetsKeys(new RPtr(assets))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    // MultiAsset
+
+    @ReactMethod
+    public final void multiAssetNew(Promise promise) {
+        Native.I
+                .multiAssetNew()
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void multiAssetLen(String multiAsset, Promise promise) {
+        Native.I
+                .multiAssetLen(new RPtr(multiAsset))
+                .map(Long::intValue)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void multiAssetInsert(String multiAsset, String key, String value, Promise promise) {
+        Native.I
+                .multiAssetInsert(new RPtr(multiAsset), new RPtr(key), new RPtr(value))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void multiAssetGet(String multiAsset, String key, Promise promise) {
+        Native.I
+                .multiAssetGet(new RPtr(multiAsset), new RPtr(key))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void multiAssetKeys(String multiAsset, Promise promise) {
+        Native.I
+                .multiAssetKeys(new RPtr(multiAsset))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void multiAssetSub(String multiAsset, String other, Promise promise) {
+        Native.I
+                .multiAssetSub(new RPtr(multiAsset), new RPtr(other))
                 .map(RPtr::toJs)
                 .pour(promise);
     }
@@ -875,6 +1185,7 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
                 .rewardAddressesAdd(new RPtr(rewardAddresses), new RPtr(item))
                 .pour(promise);
     }
+    
 
     // UnitInterval
 
@@ -1238,6 +1549,7 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
     public final void transactionBodyTtl(String txBody, Promise promise) {
         Native.I
                 .transactionBodyTtl(new RPtr(txBody))
+                .map(Long::intValue)
                 .pour(promise);
     }
 
@@ -1301,9 +1613,31 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public final void transactionBuilderAddScriptInput(String txBuilder, String hash, String input, String amount, Promise promise) {
+        Native.I
+                .transactionBuilderAddScriptInput(new RPtr(txBuilder), new RPtr(hash), new RPtr(input), new RPtr(amount))
+                .pour(promise);
+    }
+
+    @ReactMethod
     public final void transactionBuilderAddBootstrapInput(String txBuilder, String hash, String input, String amount, Promise promise) {
         Native.I
                 .transactionBuilderAddBootstrapInput(new RPtr(txBuilder), new RPtr(hash), new RPtr(input), new RPtr(amount))
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void transactionBuilderAddInput(String txBuilder, String address, String input, String amount, Promise promise) {
+        Native.I
+                .transactionBuilderAddInput(new RPtr(txBuilder), new RPtr(address), new RPtr(input), new RPtr(amount))
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void transactionBuilderFeeForInput(String txBuilder, String address, String input, String amount, Promise promise) {
+        Native.I
+                .transactionBuilderFeeForInput(new RPtr(txBuilder), new RPtr(address), new RPtr(input), new RPtr(amount))
+                .map(RPtr::toJs)
                 .pour(promise);
     }
 
@@ -1337,6 +1671,13 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public final void transactionBuilderSetValidityStartInterval(String txBuilder, Double vsi, Promise promise) {
+        Native.I
+                .transactionBuilderSetValidityStartInterval(new RPtr(txBuilder), vsi.longValue())
+                .pour(promise);
+    }
+
+    @ReactMethod
     public final void transactionBuilderSetCerts(String txBuilder, String certs, Promise promise) {
         Native.I
                 .transactionBuilderSetCerts(new RPtr(txBuilder), new RPtr(certs))
@@ -1347,6 +1688,13 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
     public final void transactionBuilderSetWithdrawals(String txBuilder, String withdrawals, Promise promise) {
         Native.I
                 .transactionBuilderSetWithdrawals(new RPtr(txBuilder), new RPtr(withdrawals))
+                .pour(promise);
+    }
+
+    @ReactMethod
+    public final void transactionBuilderSetMetadata(String txBuilder, String metadata, Promise promise) {
+        Native.I
+                .transactionBuilderSetMetadata(new RPtr(txBuilder), new RPtr(metadata))
                 .pour(promise);
     }
 
@@ -1421,7 +1769,7 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
                 .pour(promise);
     }
 
-    // Vkeywitnesses
+    // Withdrawals
 
     @ReactMethod
     public final void withdrawalsNew(Promise promise) {
@@ -1462,5 +1810,15 @@ public class HaskellShelleyModule extends ReactContextBaseJavaModule {
                 .map(RPtr::toJs)
                 .pour(promise);
     }
+    
+    //
+    @ReactMethod
+    public final void legacyDaedalusPrivateKeyFromBytes(String bytes, Promise promise) {
+        Native.I
+                .legacyDaedalusPrivateKeyFromBytes(Base64.decode(bytes, Base64.DEFAULT))
+                .map(RPtr::toJs)
+                .pour(promise);
+    }
+
 
 }

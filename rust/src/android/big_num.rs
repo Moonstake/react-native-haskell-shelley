@@ -1,10 +1,11 @@
 use jni::objects::{JObject, JString};
-use jni::sys::{jobject};
+use jni::sys::{jobject, jint};
 use jni::JNIEnv;
 use super::ptr_j::*;
 use super::result::ToJniResult;
 use super::string::*;
-use crate::panic::{handle_exception_result, ToResult};
+use super::primitive::ToPrimitiveObject;
+use crate::panic::{handle_exception_result, ToResult, Zip};
 use crate::ptr::RPtrRepresentable;
 
 use cardano_serialization_lib::utils::{BigNum};
@@ -35,18 +36,6 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_bigNumToStr(
   .jresult(&env)
 }
 
-// #[allow(non_snake_case)]
-// #[no_mangle]
-// pub extern "C" fn Java_io_emurgo_chainlibs_Native_valueFromU64(
-//   env: JNIEnv, _: JObject, long: jlong
-// ) -> jobject {
-//   handle_exception_result(|| {
-//     let r_u64 = u64::from_jlong(long);
-//     Value::from(r_u64).rptr().jptr(&env)
-//   })
-//   .jresult(&env)
-// }
-
 #[allow(non_snake_case)]
 #[no_mangle]
 pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_bigNumCheckedAdd(
@@ -75,6 +64,45 @@ pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_bigNumCheckedSub
     let otherval = rother.typed_ref::<BigNum>()?;
     let res = val.checked_sub(otherval).into_result()?;
     res.rptr().jptr(&env)
+  })
+  .jresult(&env)
+}
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_bigNumClampedSub(
+  env: JNIEnv, _: JObject, ptr: JObject, other: JObject
+) -> jobject {
+  handle_exception_result(|| {
+    let rptr = ptr.rptr(&env)?;
+    let rptr_other = other.rptr(&env)?;
+    rptr
+      .typed_ref::<BigNum>()
+      .zip(rptr_other.typed_ref::<BigNum>())
+      .map(|(val, other)| val.clamped_sub(other))
+      .and_then(|res| {
+        res.rptr().jptr(&env)
+      })
+  })
+  .jresult(&env)
+}
+
+
+#[allow(non_snake_case)]
+#[no_mangle]
+pub unsafe extern "C" fn Java_io_emurgo_rnhaskellshelley_Native_bigNumCompare(
+  env: JNIEnv, _: JObject, value_ptr: JRPtr, rhs_value_ptr: JRPtr
+) -> jobject {
+  handle_exception_result(|| {
+    let value_ptr = value_ptr.rptr(&env)?;
+    let rhs_value_ptr = rhs_value_ptr.rptr(&env)?;
+    value_ptr
+      .typed_ref::<BigNum>()
+      .zip(rhs_value_ptr.typed_ref::<BigNum>())
+      .map(|(value, rhs_value)| value.compare(rhs_value))
+      .and_then(|res| {
+        (res as jint).jobject(&env)
+      })
   })
   .jresult(&env)
 }
